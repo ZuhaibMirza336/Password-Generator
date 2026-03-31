@@ -25,25 +25,47 @@ function App() {
     const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     let characterSet = "";
-    if (numberAllowed) characterSet += numbers;
-    if (symbolAllowed) characterSet += symbols;
-    if (lowercaseAllowed) characterSet += lowercase;
-    if (uppercaseAllowed) characterSet += uppercase;
+    let guaranteedChars = [];
 
+    if (numberAllowed) {
+      characterSet += numbers;
+      guaranteedChars.push(numbers[Math.floor(Math.random() * numbers.length)]);
+    }
+
+    if (symbolAllowed) {
+      characterSet += symbols;
+      guaranteedChars.push(symbols[Math.floor(Math.random() * symbols.length)]);
+    }
+
+    if (lowercaseAllowed) {
+      characterSet += lowercase;
+      guaranteedChars.push(lowercase[Math.floor(Math.random() * lowercase.length)]);
+    }
+
+    if (uppercaseAllowed) {
+      characterSet += uppercase;
+      guaranteedChars.push(uppercase[Math.floor(Math.random() * uppercase.length)]);
+    }
+
+    // ❗ If nothing selected
     if (!characterSet) {
       setPassword("Select at least one option!");
       return;
     }
-    let generatedPassword = "";
-    for (let i = 0; i < length; i++) {
+
+    let generatedPassword = [...guaranteedChars];
+
+    // Fill remaining length
+    for (let i = generatedPassword.length; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * characterSet.length);
-      generatedPassword += characterSet[randomIndex];
+      generatedPassword.push(characterSet[randomIndex]);
     }
-    setPassword(generatedPassword);
-  }, [
-    length, numberAllowed, symbolAllowed, lowercaseAllowed,
-    uppercaseAllowed, setPassword,
-  ]);
+
+    // Shuffle (important!)
+    generatedPassword = generatedPassword.sort(() => Math.random() - 0.5);
+
+    setPassword(generatedPassword.join(""));
+  }, [length, numberAllowed, symbolAllowed, lowercaseAllowed, uppercaseAllowed]);
 
   useEffect(() => {
     generatePassword();
