@@ -18,7 +18,6 @@ function App() {
     }
   }, [password]);
 
-
   const generatePassword = useCallback(() => {
     const numbers = "0123456789";
     const symbols = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
@@ -31,6 +30,10 @@ function App() {
     if (lowercaseAllowed) characterSet += lowercase;
     if (uppercaseAllowed) characterSet += uppercase;
 
+    if (!characterSet) {
+      setPassword("Select at least one option!");
+      return;
+    }
     let generatedPassword = "";
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * characterSet.length);
@@ -38,21 +41,22 @@ function App() {
     }
     setPassword(generatedPassword);
   }, [
-    length,
-    numberAllowed,
-    symbolAllowed,
-    lowercaseAllowed,
-    uppercaseAllowed,
-    setPassword,
+    length, numberAllowed, symbolAllowed, lowercaseAllowed,
+    uppercaseAllowed, setPassword,
   ]);
 
   useEffect(() => {
     generatePassword();
-  }, [length, numberAllowed, symbolAllowed, lowercaseAllowed, uppercaseAllowed, generatePassword]);
+  }, [
+    length, numberAllowed, symbolAllowed, lowercaseAllowed,
+    uppercaseAllowed, generatePassword,
+  ]);
 
   return (
     <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 my-8 text-green-500 bg-gray-800">
-      <h1 className="text-4xl text-center text-blue-500 my-3">Password Generator</h1>
+      <h1 className="text-4xl text-center text-blue-500 my-3">
+        Password Generator
+      </h1>
       <div className="flex shadow rounded-lg overflow-hidden mb-4">
         <input
           type="text"
@@ -116,7 +120,6 @@ function App() {
             onChange={(e) => setUppercaseAllowed(e.target.checked)}
           />
           <label htmlFor="uppercase">Uppercase</label>
-          
         </div>
       </div>
     </div>
